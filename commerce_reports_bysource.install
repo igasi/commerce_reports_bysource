@@ -9,7 +9,6 @@ function commerce_reports_bysource_install() {
 	
 	_commerce_reports_bysource_add_taxonomy_vocabulary();
 	_commerce_reports_bysource_add_taxonomy_term_field();
-	$views = _commerce_reports_bysource_create_views();
   	
 }
 
@@ -68,25 +67,6 @@ function _commerce_reports_bysource_add_taxonomy_term_field(){
 }
 
 
-/*
- * Auxiliary function for create default view
- */
-function _commerce_reports_bysource_create_views(){
-	return commerce_reports_bysource_views_default_views();
-}
-
-/*
- * Implementation of hook_views_default_views().
- */
-function commerce_reports_bysource_views_default_views() {
-  foreach (glob(dirname(__FILE__) . "/views/*.inc") as $filename) {
-    include_once($filename);
-    $views[$view->name] = $view;
-  }
-  return $views;
-}
-
-
 /***************************************************************/
 
 /**
@@ -111,7 +91,7 @@ function _commerce_reports_bysource_delete_taxonomy_vocabulary(){
 
 	$vocab = taxonomy_vocabulary_machine_name_load('commerce_reports_bysource');
 	if (isset($vocab)){
-		taxonomy_vocabulary_delete($vocab);	
+		taxonomy_vocabulary_delete($vocab->vid);	
 	}
 
 }
