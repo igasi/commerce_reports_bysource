@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * Implements hook_init()
+ */
+function commerce_reports_bysource_init(){
+	//create var src in session
+	$_SESSION['crb_src'] = $_GET['src'];
+	unset($_GET['src']);
+}
+
+/**
+ * Action for rule commerce_reports_bysource_classify
+ */
+function commerce_reports_bysource_classify_order($order){
+
+	//set values
+	unset($term);
+	$src = $_SESSION['crb_src'];
+	$vocabulary = 'commerce_reports_bysource';
+	$vocabulary_names=taxonomy_vocabulary_get_names();
+	$vid = $vocabulary_names[$vocabulary]->vid;
+	$tid = taxonomy_get_term_by_name($src, $vocabulary);
+
+	//if not exists source create it
+	if (!isset($tid)){
+		$newsrc = (object) array(
+			'name' => $src,
+			'description' => 'Source: ' . $src,
+			'vid' => $vid,
+			);
+		taxonomy_term_save($newsrc);
+		$tid = $newsrc->tid;
+	}
+
+	//if not arte instance $order do it
+	if (!($order instanceof EntityMetadataWrapper)) {
+    	$order = entity_metadata_wrapper('commerce_order', $order);
+  	}
+
+  	//classify order by source and save
+  	$order->field_reports_bysource = array($tid);
+  	commerce_order_save($order);
+
+
+}

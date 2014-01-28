@@ -3,9 +3,10 @@ description = It add a new tab for extend commerce_reports, that filter by sourc
 package = Commerce (contrib)
 core = 7.x
 
+dependencies[] = field
 ;dependencies[] = commerce
-;dependencies[] = views_api
-;dependencies[] = commerce_order
+dependencies[] = views_api
+dependencies[] = commerce_order
 
 
 ;by igasi

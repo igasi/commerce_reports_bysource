@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Implements hook_rules_action_info().
+ */
+function commerce_reports_bysource_rules_action_info() {
+  return array(
+    // Add rules action which classfy by source referral.
+    'commerce_reports_bysource_classify' => array(
+      'label' => t('Classify order by source referral'),
+      'parameter' => array(
+        'commerce_order' => array(
+          'type' => 'commerce_order',
+          'label' => t('Order in checkout'),
+        ),
+      ),
+      'callback' => array(
+        'execute' => 'commerce_reports_bysource_classify_order'
+      ),
+    ),
+  );
+}

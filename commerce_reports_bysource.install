@@ -14,9 +14,8 @@ function commerce_reports_bysource_install() {
 }
 
 
-
 /**
-* Function auxiliary for create a taxonomy vocabulary.
+* Auxiliary function for create a taxonomy vocabulary.
 */
 
 function _commerce_reports_bysource_add_taxonomy_vocabulary(){
@@ -30,7 +29,7 @@ function _commerce_reports_bysource_add_taxonomy_vocabulary(){
 }
 
 /**
-* Function auxiliary for create a taxonomy term field in order entity.
+* Auxiliary function for create a taxonomy term field in order entity.
 */
 function _commerce_reports_bysource_add_taxonomy_term_field(){
 
@@ -69,6 +68,9 @@ function _commerce_reports_bysource_add_taxonomy_term_field(){
 }
 
 
+/*
+ * Auxiliary function for create default view
+ */
 function _commerce_reports_bysource_create_views(){
 	return commerce_reports_bysource_views_default_views();
 }
