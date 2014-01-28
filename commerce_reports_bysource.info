@@ -8,6 +8,9 @@ dependencies[] = field
 ;dependencies[] = views_api
 dependencies[] = commerce_order
 
+files[] = views/commerce_reports_bysource.views.inc
+files[] = rules/commerce_reports_bysource.rules.inc
+files[] = rules/commerce_reports_bysource.rules_defaults.inc
 
 ;by igasi
 version = "7.x-1.0-dev"
