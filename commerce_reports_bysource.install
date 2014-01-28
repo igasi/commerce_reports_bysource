@@ -123,11 +123,12 @@ function _commerce_reports_bysource_delete_taxonomy_vocabulary(){
 function _commerce_reports_bysource_delete_taxonomy_term_field(){
 //deletefield
 	$field_name = 'field_reports_bysource';
-	if (isset(field_info_field($field_name))){
-			field_delete_field($field_name);
+	$field = field_info_field($field_name);
+	if ( isset($field)){
+		field_delete_field($field_name);
 		//actually delete the field
-			field_purge_batch();
-		}
+		field_purge_batch();
+	}
 }
 
 
