@@ -40,7 +40,7 @@ function _commerce_reports_bysource_add_taxonomy_term_field(){
 	  'settings' => array(
 	    'allowed_values' => array(
 	      array(
-	        'vocabulary' => $vocabulary->commerce_reports_bysource,
+	        'vocabulary' => 'commerce_reports_bysource',
 	        'parent' => 0
 	      ),
 	    ),
