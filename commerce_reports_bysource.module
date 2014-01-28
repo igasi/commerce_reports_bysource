@@ -5,8 +5,10 @@
  */
 function commerce_reports_bysource_init(){
 	//create var src in session
-	$_SESSION['crb_src'] = $_GET['src'];
-	unset($_GET['src']);
+	if (isset($_GET['src'])){
+		$_SESSION['crb_src'] = $_GET['src'];
+		unset($_GET['src']);
+	}
 }
 
 /**

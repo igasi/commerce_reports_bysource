@@ -9,7 +9,7 @@ function commerce_reports_bysource_install() {
 	
 	_commerce_reports_bysource_add_taxonomy_vocabulary();
 	_commerce_reports_bysource_add_taxonomy_term_field();
-	_commerce_reports_bysource_create_views();
+	$views = _commerce_reports_bysource_create_views();
   	
 }
 
@@ -20,10 +20,10 @@ function commerce_reports_bysource_install() {
 
 function _commerce_reports_bysource_add_taxonomy_vocabulary(){
 	$new_vocab = (object) array(
-    'name' => 'Commerce reports by source',
-    'description' => 'This vocabulary has the purpose of classify source referral traffic.',
-    'machine_name' => 'commerce_reports_bysource',
-  );
+	    'name' => 'Commerce reports by source',
+	    'description' => 'This vocabulary has the purpose of classify source referral traffic.',
+	    'machine_name' => 'commerce_reports_bysource',
+ 	);
   
 	taxonomy_vocabulary_save($new_vocab);
 }
@@ -36,7 +36,7 @@ function _commerce_reports_bysource_add_taxonomy_term_field(){
 //define field
 	$field = array(
 	  'field_name' => 'field_reports_bysource',
-	  'type' => 'taxonomy_term_reference'
+	  'type' => 'taxonomy_term_reference',
 	  'settings' => array(
 	    'allowed_values' => array(
 	      array(
@@ -110,7 +110,9 @@ function commerce_reports_bysource_uninstall() {
 function _commerce_reports_bysource_delete_taxonomy_vocabulary(){
 
 	$vocab = taxonomy_vocabulary_machine_name_load('commerce_reports_bysource');
-	taxonomy_vocabulary_delete($vocab->vid);	
+	if (isset($vocab)){
+		taxonomy_vocabulary_delete($vocab->vid);	
+	}
 
 }
 
@@ -120,9 +122,12 @@ function _commerce_reports_bysource_delete_taxonomy_vocabulary(){
 */
 function _commerce_reports_bysource_delete_taxonomy_term_field(){
 //deletefield
-	field_delete_field('field_reports_bysource');
-//actually delete the field
-	field_purge_batch():
+	$field_name = 'field_reports_bysource';
+	if (isset(field_info_field($field_name))){
+			field_delete_field($field_name);
+		//actually delete the field
+			field_purge_batch();
+		}
 }
 
 
@@ -132,10 +137,11 @@ function _commerce_reports_bisource_delete_view(){
 		include_once($filename);
 		$views[$view->name] = $view;
 		$view_loaded = views_ui_cache_load($views[$view->name]);
-		$view_loaded->delete();
-		views_object_cache_clear('view', $view_loaded->name);
+		if (isset($view_loaded)){
+			$view_loaded->delete();
+			views_object_cache_clear('view', $view_loaded->name);
+		}
 	}
-
 
 }
 

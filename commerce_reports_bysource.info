@@ -5,7 +5,7 @@ core = 7.x
 
 dependencies[] = field
 ;dependencies[] = commerce
-dependencies[] = views_api
+;dependencies[] = views_api
 dependencies[] = commerce_order
 
 
