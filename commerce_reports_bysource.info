@@ -1,0 +1,15 @@
+name = Commerce Reports by Source
+description = It add a new tab for extend commerce_reports, that filter by source traffic referrals.
+package = Commerce (contrib)
+core = 7.x
+
+;dependencies[] = commerce
+;dependencies[] = views_api
+;dependencies[] = commerce_order
+
+
+;by igasi
+version = "7.x-1.0-dev"
+core = "7.x"
+project = "commerce_reports_bysource"
+datestamp = "1390496209"

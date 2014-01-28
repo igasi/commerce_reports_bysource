@@ -1,0 +1,142 @@
+<?php
+	
+
+/**
+* Implements hook_install().
+*/
+
+function commerce_reports_bysource_install() {
+	
+	_commerce_reports_bysource_add_taxonomy_vocabulary();
+	_commerce_reports_bysource_add_taxonomy_term_field();
+	_commerce_reports_bysource_create_views();
+  	
+}
+
+
+
+/**
+* Function auxiliary for create a taxonomy vocabulary.
+*/
+
+function _commerce_reports_bysource_add_taxonomy_vocabulary(){
+	$new_vocab = (object) array(
+    'name' => 'Commerce reports by source',
+    'description' => 'This vocabulary has the purpose of classify source referral traffic.',
+    'machine_name' => 'commerce_reports_bysource',
+  );
+  
+	taxonomy_vocabulary_save($new_vocab);
+}
+
+/**
+* Function auxiliary for create a taxonomy term field in order entity.
+*/
+function _commerce_reports_bysource_add_taxonomy_term_field(){
+
+//define field
+	$field = array(
+	  'field_name' => 'field_reports_bysource',
+	  'type' => 'taxonomy_term_reference'
+	  'settings' => array(
+	    'allowed_values' => array(
+	      array(
+	        'vocabulary' => $vocabulary->commerce_reports_bysource,
+	        'parent' => 0
+	      ),
+	    ),
+	  ),
+	);
+	field_create_field($field);
+
+//create field instance in order entity
+	$instance = array(
+	    'field_name' => 'field_reports_bysource',
+	    'entity_type' => 'commerce_order',
+	    'label' => 'Reports by source',
+	    'bundle' => 'commerce_order',
+	    'required' => false,
+	    'widget' => array(
+	        'type' => 'options_select'
+	    ),
+	    'display' => array(
+	        'default' => array('type' => 'hidden'),
+	        'teaser' => array('type' => 'hidden')
+	    )
+	);
+	field_create_instance($instance);
+		
+}
+
+
+function _commerce_reports_bysource_create_views(){
+	return commerce_reports_bysource_views_default_views();
+}
+
+/*
+ * Implementation of hook_views_default_views().
+ */
+function commerce_reports_bysource_views_default_views() {
+  foreach (glob(dirname(__FILE__) . "/views/*.inc") as $filename) {
+    include_once($filename);
+    $views[$view->name] = $view;
+  }
+  return $views;
+}
+
+
+/***************************************************************/
+
+/**
+* Implements hook_uninstall().
+*/
+
+function commerce_reports_bysource_uninstall() {
+
+	_commerce_reports_bysource_delete_taxonomy_vocabulary();  
+	_commerce_reports_bysource_delete_taxonomy_term_field();
+	_commerce_reports_bisource_delete_view();
+
+}
+
+
+
+/**
+* Function auxiliary for delete a taxonomy vocabulary.
+*/
+
+function _commerce_reports_bysource_delete_taxonomy_vocabulary(){
+
+	$vocab = taxonomy_vocabulary_machine_name_load('commerce_reports_bysource');
+	taxonomy_vocabulary_delete($vocab->vid);	
+
+}
+
+
+/**
+* Function auxiliary for delete a taxonomy term field in order entity.
+*/
+function _commerce_reports_bysource_delete_taxonomy_term_field(){
+//deletefield
+	field_delete_field('field_reports_bysource');
+//actually delete the field
+	field_purge_batch():
+}
+
+
+function _commerce_reports_bisource_delete_view(){
+
+	foreach (glob(dirname(__FILE__) . "/views/*.inc") as $filename) {
+		include_once($filename);
+		$views[$view->name] = $view;
+		$view_loaded = views_ui_cache_load($views[$view->name]);
+		$view_loaded->delete();
+		views_object_cache_clear('view', $view_loaded->name);
+	}
+
+
+}
+
+
+
+
