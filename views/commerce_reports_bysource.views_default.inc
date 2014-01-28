@@ -45,5 +45,6 @@ function commerce_reports_bysource_views_default_views() {
 	$handler = $view->new_display('page', 'Page view test', 'page');
 	$handler->display->display_options['path'] = 'view-test';
 
+	$views[$view->name] = $view;
 	return $views;
 }

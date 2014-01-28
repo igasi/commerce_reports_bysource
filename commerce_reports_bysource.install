@@ -114,15 +114,7 @@ function _commerce_reports_bysource_delete_taxonomy_term_field(){
 
 function _commerce_reports_bisource_delete_view(){
 
-	foreach (glob(dirname(__FILE__) . "/views/*.inc") as $filename) {
-		include_once($filename);
-		$views[$view->name] = $view;
-		$view_loaded = views_ui_cache_load($views[$view->name]);
-		if ( isset($view_loaded)){
-			$view_loaded->delete();
-			views_object_cache_clear('view', $view_loaded->name);
-		}
-	}
+
 
 }
 
