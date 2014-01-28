@@ -111,7 +111,7 @@ function _commerce_reports_bysource_delete_taxonomy_vocabulary(){
 
 	$vocab = taxonomy_vocabulary_machine_name_load('commerce_reports_bysource');
 	if (isset($vocab)){
-		taxonomy_vocabulary_delete($vocab->vid);	
+		taxonomy_vocabulary_delete($vocab);	
 	}
 
 }
@@ -124,7 +124,7 @@ function _commerce_reports_bysource_delete_taxonomy_term_field(){
 //deletefield
 	$field_name = 'field_reports_bysource';
 	$field = field_info_field($field_name);
-	if ( isset($field)){
+	if ( isset($field) ){
 		field_delete_field($field_name);
 		//actually delete the field
 		field_purge_batch();
@@ -138,7 +138,7 @@ function _commerce_reports_bisource_delete_view(){
 		include_once($filename);
 		$views[$view->name] = $view;
 		$view_loaded = views_ui_cache_load($views[$view->name]);
-		if (isset($view_loaded)){
+		if ( isset($view_loaded)){
 			$view_loaded->delete();
 			views_object_cache_clear('view', $view_loaded->name);
 		}
