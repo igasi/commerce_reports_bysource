@@ -10,6 +10,6 @@ function commerce_reports_bysource_default_rules_configuration() {
   $rule->event('commerce_checkout_complete')
           ->action(''commerce_reports_bysource_classify', array('commerce_order:select' => 'commerce_order')
   );
-  $configs['commerce_reports_bysource_rule_classify'] = $rule;
+  $configs['commerce_reports_bysource_rule_classify_order'] = $rule;
   return $configs;
 }

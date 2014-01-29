@@ -9,11 +9,12 @@ function commerce_reports_bysource_rules_action_info() {
     'commerce_reports_bysource_classify' => array(
       'label' => t('Classify order by source referral'),
       'parameter' => array(
-        'commerce_order' => array(
+        'commerce_order_bysource' => array(
           'type' => 'commerce_order',
           'label' => t('Order in checkout'),
         ),
       ),
+      'group' => t('Commerce reports by source'),
       'callback' => array(
         'execute' => 'commerce_reports_bysource_classify_order'
       ),
