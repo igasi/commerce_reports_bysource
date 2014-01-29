@@ -13,6 +13,8 @@ function commerce_reports_bysource_init(){
 	//$_SESSION['commerce_reports_bysource']['src_code'] = $request->query->get('src');
 
 	$_SESSION['commerce_reports_bysource']['src_code'] = $_GET['src'];
+	drupal_set_message("<pre>" . print_r($_GET, 1) . "</pre>");
+	drupal_set_message("<pre>" . print_r($_SESSION, 1) . "</pre>");
 
 }
 
