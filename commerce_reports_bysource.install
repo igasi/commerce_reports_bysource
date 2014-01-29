@@ -114,7 +114,13 @@ function _commerce_reports_bysource_delete_taxonomy_term_field(){
 
 function _commerce_reports_bisource_delete_view(){
 
-
+	$name='view_test';
+	
+	$view = views_ui_cache_load($name);
+	if isset($view){
+		$view->delete();
+		views_object_cache_clear('view', $view->name);
+	}
 
 }
 
