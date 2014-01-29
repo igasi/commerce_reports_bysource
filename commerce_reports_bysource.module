@@ -1,18 +1,18 @@
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Implements hook_init()
  */
 function commerce_reports_bysource_init(){
 
-	//global $src_code;
+	//$request = Request::createFromGlobals();
+	//$_SESSION['commerce_reports_bysource']['src_code'] = $request->query->get('src');
 
-	require __DIR__ . './vendor/autoload.php';
-
-	use Symfony\Component\HttpFoundation\Request;
-
-	$request = Request::createFromGlobals();
-	$_SESSION['src_code'] = $request->query->get('src');
+	$_SESSION['commerce_reports_bysource']['src_code'] = $_GET['src'];
 
 }
 
@@ -25,10 +25,10 @@ function commerce_reports_bysource_classify_order($order){
 	unset($term);
 	if (array_key_exists('src_code', $_SESSION)){
 		
-		$src_code = $_SESSION['src_code'];
+		$src_code = $_SESSION['commerce_reports_bysource']['src_code'];
 	
 		$vocabulary = 'commerce_reports_bysource';
-		$vocabulary_names=taxonomy_vocabulary_get_names();
+		$vocabulary_names = taxonomy_vocabulary_get_names();
 		$vid = $vocabulary_names[$vocabulary]->vid;
 		$tid = taxonomy_get_term_by_name($src_code, $vocabulary);
 
@@ -49,10 +49,10 @@ function commerce_reports_bysource_classify_order($order){
 	  	}
 
 	  	//classify order by source and save
-	  	$order->field_reports_bysource = array($tid);
+	  	$order->field_data_field_reports_bysource['und'][0]['field_reports_bysource_tid'] = $tid;
 	  	commerce_order_save($order);
 
-	  	unset($_SESSION['src_code']);
+	  	unset($_SESSION['commerce_reports_bysource']['src_code']);
   	}
 
 }
