@@ -6,7 +6,13 @@
 function commerce_reports_bysource_init(){
 
 	global $src_code;
-	include_once ('./src/commerce_reports_bysource_getRequest_source.php');
+
+	require __DIR__ . './vendor/autoload.php';
+
+	use Symfony\Component\HttpFoundation\Request;
+
+	$request = Request::createFromGlobals();
+	$src = $request->query->get('src');
 
 }
 
