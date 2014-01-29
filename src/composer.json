@@ -1,10 +1,6 @@
 {
     "name": "getRequest_source/commerce_reports_bysource",
     "description": "Layer request for get source and tracking for generating commerce reports by source",
-    "require-dev": {
-        "raulfraile/ladybug": "dev-master"
-    },
-    "license": "MIT",
     "authors": [
         {
             "name": "igasi",
