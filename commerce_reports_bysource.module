@@ -7,7 +7,7 @@ function commerce_reports_bysource_init(){
 
 	global $src_code;
 
-	require __DIR__ . './vendor/autoload.php';
+	require composer_manager_vendor_dir() . '/autoload.php';
 
 	use Symfony\Component\HttpFoundation\Request;
 
