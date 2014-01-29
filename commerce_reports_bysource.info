@@ -11,9 +11,6 @@ dependencies[] = commerce_order
 files[] = rules/commerce_reports_bysource.rules.inc
 files[] = rules/commerce_reports_bysource.rules_defaults.inc
 
-;layer for get source code provide
-files[] = includes/commerce_reports_bysource_getRequest_source.php
-
 ;by igasi
 version = "7.x-1.0-dev"
 core = "7.x"
