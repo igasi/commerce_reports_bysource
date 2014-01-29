@@ -6,5 +6,4 @@ use Symfony\Component\HttpFoundation\Request;
 
 $request = Request::createFromGlobals();
 
-$request->query->get('src');
-
+$src = $request->query->get('src');
