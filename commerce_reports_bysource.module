@@ -4,11 +4,17 @@
  * Implements hook_init()
  */
 function commerce_reports_bysource_init(){
+
+	global $request;
+	include_once ('./src/commerce_reports_bysource_getRequest_source.php');
+
+	/*
 	//create var src in session
 	if (isset($_GET['src'])){
 		$_SESSION['crb_src'] = $_GET['src'];
 		unset($_GET['src']);
 	}
+	¿/
 }
 
 /**
@@ -18,7 +24,7 @@ function commerce_reports_bysource_classify_order($order){
 
 	//set values
 	unset($term);
-	$src = $_SESSION['crb_src'];
+	$src = $request->query->get('src');
 	$vocabulary = 'commerce_reports_bysource';
 	$vocabulary_names=taxonomy_vocabulary_get_names();
 	$vid = $vocabulary_names[$vocabulary]->vid;
