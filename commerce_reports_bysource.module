@@ -5,14 +5,14 @@
  */
 function commerce_reports_bysource_init(){
 
-	global $src_code;
+	//global $src_code;
 
-	require composer_manager_vendor_dir() . '/autoload.php';
+	require __DIR__ . './vendor/autoload.php';
 
 	use Symfony\Component\HttpFoundation\Request;
 
 	$request = Request::createFromGlobals();
-	$src = $request->query->get('src');
+	$_SESSION['src_code'] = $request->query->get('src');
 
 }
 
@@ -23,32 +23,37 @@ function commerce_reports_bysource_classify_order($order){
 
 	//set values
 	unset($term);
-	//use globaly $src_code
-	$vocabulary = 'commerce_reports_bysource';
-	$vocabulary_names=taxonomy_vocabulary_get_names();
-	$vid = $vocabulary_names[$vocabulary]->vid;
-	$tid = taxonomy_get_term_by_name($src_code, $vocabulary);
+	if (array_key_exists('src_code', $_SESSION)){
+		
+		$src_code = $_SESSION['src_code'];
+	
+		$vocabulary = 'commerce_reports_bysource';
+		$vocabulary_names=taxonomy_vocabulary_get_names();
+		$vid = $vocabulary_names[$vocabulary]->vid;
+		$tid = taxonomy_get_term_by_name($src_code, $vocabulary);
 
-	//if not exists source create it
-	if (!isset($tid)){
-		$newsrc = (object) array(
-			'name' => $src_code,
-			'description' => 'Source: ' . $src_code,
-			'vid' => $vid,
-			);
-		taxonomy_term_save($newsrc);
-		$tid = $newsrc->tid;
-	}
+		//if not exists source create it
+		if (empty($tid)){
+			$newsrc = (object) array(
+				'name' => $src_code,
+				'description' => 'Source: ' . $src_code,
+				'vid' => $vid,
+				);
+			taxonomy_term_save($newsrc);
+			$tid = $newsrc->tid;
+		}
 
-	//if not arte instance $order do it
-	if (!($order instanceof EntityMetadataWrapper)) {
-    	$order = entity_metadata_wrapper('commerce_order', $order);
+		//if not arte instance $order do it
+		if (!($order instanceof EntityMetadataWrapper)) {
+	    	$order = entity_metadata_wrapper('commerce_order', $order);
+	  	}
+
+	  	//classify order by source and save
+	  	$order->field_reports_bysource = array($tid);
+	  	commerce_order_save($order);
+
+	  	unset($_SESSION['src_code']);
   	}
-
-  	//classify order by source and save
-  	$order->field_reports_bysource = array($tid);
-  	commerce_order_save($order);
-
 
 }
 
