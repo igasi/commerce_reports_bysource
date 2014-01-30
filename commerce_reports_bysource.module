@@ -18,7 +18,9 @@ function commerce_reports_bysource_init(){
             }
     } else {
     	//source: direct default or without source code in url
-    	$_SESSION['commerce_reports_bysource']['src_code'] = 'Direct';
+    	if ( !isset($_SESSION['commerce_reports_bysource']['src_code']) || empty($_SESSION['commerce_reports_bysource']['src_code']) ){
+    		$_SESSION['commerce_reports_bysource']['src_code'] = 'Direct';
+    	}
     }
 
 }
@@ -58,7 +60,7 @@ function commerce_reports_bysource_classify_order($order){
 	  		'field' => $order->field_data_field_reports_bysource['und'][0]['field_reports_bysource_tid'],
 	  		'order' => $order
 	  		);
-	  	
+
 	  	drupal_set_message("<pre>" . print_r($results, 1) . "</pre>");
 
   	}
