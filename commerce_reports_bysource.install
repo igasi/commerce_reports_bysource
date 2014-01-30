@@ -108,7 +108,7 @@ function _commerce_reports_bysource_delete_taxonomy_term_field(){
 	$field_name = 'field_reports_bysource';
 	$field = field_info_field($field_name);
 	if ( isset($field) ){
-		$result = db_truncate($field_name)->execute();
+		$result = db_truncate('field_data_'.$field_name)->execute();
 		field_delete_field($field_name);
 		//actually delete the field
 		field_purge_batch();
