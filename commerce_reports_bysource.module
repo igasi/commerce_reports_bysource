@@ -53,7 +53,7 @@ function commerce_reports_bysource_classify_order($order){
 	  	//}
 	    	drupal_set_message("<pre>" . print_r((array)$order, 1) . "</pre>");
 	  	//classify order by source and save
-	  	$order->field_reports_bysource_ref->set(intval($tid));
+	  	$order->field_reports_bysource->set(intval($tid));
 	  	commerce_order_save($order);
 
 	  	drupal_set_message("<pre>" . print_r($order, 1) . "</pre>");
