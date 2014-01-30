@@ -119,7 +119,7 @@ function _commerce_reports_bisource_delete_view(){
 	$view = views_get_view($name, $reset = FALSE);
 	if (isset($view)){
 		$view->delete();
-		views_object_cache_clear('view', $view->name);
+		views_flush_caches();
 	}
 
 }
