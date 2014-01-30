@@ -33,7 +33,7 @@ function commerce_reports_bysource_init(){
         $_SESSION['commerce_reports_bysource']['src_code'] = $src_tmpget;
 	}
 
-    drupal_set_message("<pre>" . print_r(array('src'=>$src_tmpget,'session'=>$_SESSION['commerce_reports_bysource']), 1) . "</pre>");
+    //drupal_set_message("<pre>" . print_r(array('src'=>$src_tmpget,'session'=>$_SESSION['commerce_reports_bysource']), 1) . "</pre>");
 
 }
 
@@ -51,25 +51,23 @@ function commerce_reports_bysource_classify_order($order){
 
         $vocabulary = 'commerce_reports_bysource';
 
-        $taxonomy = taxonomy_get_term_by_name($src_code, $vocabulary);
+        $taxonomy = taxonomy_get_term_by_name($src_code, $vocabulary );
         $taxonomy_item = array_pop($taxonomy);
         $tid = $taxonomy_item->tid;
-
-        drupal_set_message("<pre>" . print_r(array('tid_to_insert'=>$tid),1) . "</pre>");
 
         //if not exists source create it
         if (empty($tid)){
             $tid = _create_source($vocabulary, $src_code);
-            drupal_set_message("<pre>" . print_r(array('tid_created_to_insert'=>$tid),1) . "</pre>");
         }
 
+        //drupal_set_message("<pre>" . print_r(array('tid_to_insert'=>$tid),1) . "</pre>");
         $order = entity_metadata_wrapper('commerce_order', $order);
 
         //classify order by source and save
         $order->field_reports_bysource->set(intval($tid));
         $order->save();
 
-        drupal_set_message("<pre>order: \n" . print_r($order,1) . "</pre>");
+        //drupal_set_message("<pre>order: \n" . print_r($order,1) . "</pre>");
 
         unset($_SESSION['commerce_reports_bysource']);
 
