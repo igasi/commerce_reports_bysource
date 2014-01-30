@@ -16,6 +16,9 @@ function commerce_reports_bysource_init(){
             if ( !isset($_SESSION['commerce_reports_bysource']['src_code']) || empty($_SESSION['commerce_reports_bysource']['src_code']) ){
                     $_SESSION['commerce_reports_bysource']['src_code'] = $src_tmp;
             }
+    } else {
+    	//source: direct default or without source code in url
+    	$_SESSION['commerce_reports_bysource']['src_code'] = 'Direct';
     }
 
 }
@@ -38,13 +41,7 @@ function commerce_reports_bysource_classify_order($order){
 
 		//if not exists source create it
 		if (empty($tid)){
-			$newsrc = (object) array(
-				'name' => $src_code,
-				'description' => 'Source: ' . $src_code,
-				'vid' => $vid,
-				);
-			taxonomy_term_save($newsrc);
-			$tid = $newsrc->tid;
+			_create_source($vid,$src_code);
 		}
 
 		//if not arte instance $order do it
@@ -63,8 +60,9 @@ function commerce_reports_bysource_classify_order($order){
 	  		);
 	  	drupal_set_message("<pre>" . print_r($results, 1) . "</pre>");
 
-	  	unset($_SESSION['commerce_reports_bysource']['src_code']);
   	}
+
+  	unset($_SESSION['commerce_reports_bysource']);
 
 }
 
@@ -76,4 +74,24 @@ function commerce_reports_bysource_views_api() {
     'api' => 3,
     'path' => drupal_get_path('module', 'commerce_reports_bysource') . '/views',
   );
+}
+
+/**
+ * Auxiliary function for create taxonomy term of the commerce_reports_bysource
+ */
+
+function _create_source($vid=NULL,$src=NULL){
+	$tid = NULL;
+
+	if ( !empty($vid) || !empty($src) ){
+		$newsrc = (object) array(
+			'name' => $src,
+			'description' => 'Source: ' . $src,
+			'vid' => $vid,
+			);
+		taxonomy_term_save($newsrc);
+		$tid = $newsrc->tid;
+	}
+
+	return $tid;
 }
