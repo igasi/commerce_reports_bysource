@@ -22,6 +22,7 @@ function commerce_reports_bysource_init(){
     		$_SESSION['commerce_reports_bysource']['src_code'] = 'Direct';
     	}
     }
+    drupal_set_message("<pre>" . print_r($_SESSION['commerce_reports_bysource'], 1) . "</pre>");
 
 }
 
