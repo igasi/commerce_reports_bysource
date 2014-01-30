@@ -94,7 +94,7 @@ function commerce_reports_bysource_views_api() {
 function _create_source($vocabulary=NULL,$src=NULL){
     $tid = NULL;
 
-    if ( !empty($vocabulary) || !empty($src) ){
+    if ( !empty($vocabulary) && !empty($src) ){
             $vocabulary_names = taxonomy_vocabulary_get_names();
             $vid = $vocabulary_names[$vocabulary]->vid;
             $newsrc = (object) array(
