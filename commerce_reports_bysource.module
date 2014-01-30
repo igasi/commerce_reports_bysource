@@ -38,13 +38,12 @@ function commerce_reports_bysource_classify_order($order){
 		$src_code = $_SESSION['commerce_reports_bysource']['src_code'];
 	
 		$vocabulary = 'commerce_reports_bysource';
-		$vocabulary_names = taxonomy_vocabulary_get_names();
-		$vid = $vocabulary_names[$vocabulary]->vid;
+		
 		$tid = taxonomy_get_term_by_name($src_code, $vocabulary);
 
 		//if not exists source create it
 		if (empty($tid)){
-			$tid = _create_source($vid,$src_code);
+			$tid = _create_source($vocabulary,$src_code);
 		}
 
 		//if not arte instance $order do it
@@ -78,17 +77,19 @@ function commerce_reports_bysource_views_api() {
  * Auxiliary function for create taxonomy term of the commerce_reports_bysource
  */
 
-function _create_source($vid=NULL,$src=NULL){
+function _create_source($vocabulary=NULL,$src=NULL){
 	$tid = NULL;
 
-	if ( !empty($vid) || !empty($src) ){
+	if ( !empty($vocabulary) || !empty($src) ){
+		$vocabulary_names = taxonomy_vocabulary_get_names();
+		$vid = $vocabulary_names[$vocabulary]->vid;
 		$newsrc = (object) array(
 			'name' => $src,
 			'description' => 'Source: ' . $src,
 			'vid' => $vid,
 			);
 		taxonomy_term_save($newsrc);
-		$tid = $newsrc->tid;
+		$tid = taxonomy_get_term_by_name($src, $vocabulary)
 	}
 
 	return $tid;
