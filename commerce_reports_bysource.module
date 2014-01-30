@@ -4,7 +4,8 @@
  * Implements hook_init()
  */
 function commerce_reports_bysource_init(){
-
+	//init safe session
+	drupal_session_start();
     $src_tmpget = NULL;
 
     if ( array_key_exists('src', $_GET) ){
@@ -47,7 +48,6 @@ function commerce_reports_bysource_classify_order($order){
             $tid = _create_source($vocabulary, $src_code);
         }
 
-        //drupal_set_message("<pre>" . print_r(array('tid_to_insert'=>$tid),1) . "</pre>");
         $order = entity_metadata_wrapper('commerce_order', $order);
 
         //classify order by source and save
@@ -55,8 +55,6 @@ function commerce_reports_bysource_classify_order($order){
         $order->save();
 
         //drupal_set_message("<pre>order: \n" . print_r($order,1) . "</pre>");
-
-        unset($_SESSION['commerce_reports_bysource']);
 
     }
 
