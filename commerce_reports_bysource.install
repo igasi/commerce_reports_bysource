@@ -114,7 +114,7 @@ function _commerce_reports_bysource_delete_taxonomy_term_field(){
 
 function _commerce_reports_bisource_delete_view(){
 
-	$name='view_test';
+	$name='sales_by_source_reports';
 
 	$view = views_get_view($name, $reset = FALSE);
 	if (isset($view)){

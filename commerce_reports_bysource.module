@@ -9,26 +9,31 @@ use Symfony\Component\HttpFoundation\Request;
  */
 function commerce_reports_bysource_init(){
 
-	$request = Request::createFromGlobals();
+    $request = Request::createFromGlobals();
+    $src_session = NULL;
 
     $src_tmpget = $request->query->get('src');
-    $src_session = $_SESSION['commerce_reports_bysource']['src_code'];
+    if ( isset($_SESSION) && array_key_exists('commerce_reports_bysource',$_SESSION) && array_key_exists('src_code',$_SESSION['commerce_reports_bysource']) ){
+        $src_session = $_SESSION['commerce_reports_bysource']['src_code'];
+    }
 
 /*
     g s
     0 0 direct
     0 1 noting
     1 0 insert g > s
-    1 1 nothing
+    1 1 insert g > s
 */
+    /*if ( empty($src_tmpget) && empty($src_session) ){
+        $_SESSION['commerce_reports_bysource']['src_code'] = 'Direct';
+    } else */
+    if ( isset($src_tmpget) && empty($src_session) ) {
+        $_SESSION['commerce_reports_bysource']['src_code'] = $src_tmpget;
+	} else if ( isset($src_tmpget) && isset($src_session) ) {
+        $_SESSION['commerce_reports_bysource']['src_code'] = $src_tmpget;
+	}
 
-    if ( empty($src_tmp) && empty($src_session) ){
-    	$_SESSION['commerce_reports_bysource']['src_code'] = 'Direct';
-    } else if ( isset($src_tmp) && empty($src_session) ) {
-    	$_SESSION['commerce_reports_bysource']['src_code'] = $src_tmp;
-    }
-
-    drupal_set_message("<pre>" . print_r($_SESSION['commerce_reports_bysource'], 1) . "</pre>");
+    drupal_set_message("<pre>" . print_r(array('src'=>$src_tmpget,'session'=>$_SESSION['commerce_reports_bysource']), 1) . "</pre>");
 
 }
 
@@ -37,32 +42,38 @@ function commerce_reports_bysource_init(){
  */
 function commerce_reports_bysource_classify_order($order){
 
-	//set values
-	unset($term);
-	if ( array_key_exists('commerce_reports_bysource', $_SESSION) && array_key_exists('src_code', $_SESSION['commerce_reports_bysource']) ) {
-		
-		$src_code = $_SESSION['commerce_reports_bysource']['src_code'];
-	
-		$vocabulary = 'commerce_reports_bysource';
-		
-		$tid = taxonomy_get_term_by_name($src_code, $vocabulary);
+//set values
+    unset($term);
 
-		//if not exists source create it
-		if (empty($tid)){
-			$tid = _create_source($vocabulary, $src_code);
-		}
+    if ( array_key_exists('commerce_reports_bysource', $_SESSION) && array_key_exists('src_code', $_SESSION['commerce_reports_bysource']) ) {
 
-		$order = entity_metadata_wrapper('commerce_order', $order);
-	  	
-	  	//classify order by source and save
-	  	$order->field_reports_bysource->field_reports_bysource_ref->set(intval($tid));
-	  	commerce_order_save($order);
+        $src_code = $_SESSION['commerce_reports_bysource']['src_code'];
 
-	  	drupal_set_message("<pre>" . print_r($tid, 1) . "</pre>");
+        $vocabulary = 'commerce_reports_bysource';
 
-  	}
+        $taxonomy = taxonomy_get_term_by_name($src_code, $vocabulary);
+        $taxonomy_item = array_pop($taxonomy);
+        $tid = $taxonomy_item->tid;
 
-  	unset($_SESSION['commerce_reports_bysource']);
+        drupal_set_message("<pre>" . print_r(array('tid_to_insert'=>$tid),1) . "</pre>");
+
+        //if not exists source create it
+        if (empty($tid)){
+            $tid = _create_source($vocabulary, $src_code);
+            drupal_set_message("<pre>" . print_r(array('tid_created_to_insert'=>$tid),1) . "</pre>");
+        }
+
+        $order = entity_metadata_wrapper('commerce_order', $order);
+
+        //classify order by source and save
+        $order->field_reports_bysource->set(intval($tid));
+        $order->save();
+
+        drupal_set_message("<pre>order: \n" . print_r($order,1) . "</pre>");
+
+        unset($_SESSION['commerce_reports_bysource']);
+
+    }
 
 }
 
@@ -81,19 +92,21 @@ function commerce_reports_bysource_views_api() {
  */
 
 function _create_source($vocabulary=NULL,$src=NULL){
-	$tid = NULL;
+    $tid = NULL;
 
-	if ( !empty($vocabulary) || !empty($src) ){
-		$vocabulary_names = taxonomy_vocabulary_get_names();
-		$vid = $vocabulary_names[$vocabulary]->vid;
-		$newsrc = (object) array(
-			'name' => $src,
-			'description' => 'Source: ' . $src,
-			'vid' => $vid,
-			);
-		taxonomy_term_save($newsrc);
-		$tid = taxonomy_get_term_by_name($src, $vocabulary);
-	}
+    if ( !empty($vocabulary) || !empty($src) ){
+            $vocabulary_names = taxonomy_vocabulary_get_names();
+            $vid = $vocabulary_names[$vocabulary]->vid;
+            $newsrc = (object) array(
+                    'name' => $src,
+                    'description' => 'Source: ' . $src,
+                    'vid' => $vid,
+                    );
+            taxonomy_term_save($newsrc);
+            $taxonomy = taxonomy_get_term_by_name($src, $vocabulary);
+            $taxonomy_item = array_pop($taxonomy);
+            $tid = $taxonomy_item->tid;
+    }
 
-	return $tid;
+    return $tid;
 }
