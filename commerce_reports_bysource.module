@@ -52,11 +52,8 @@ function commerce_reports_bysource_classify_order($order){
 			$tid = _create_source($vocabulary, $src_code);
 		}
 
-		//if not arte instance $order do it
-		//if (!($order instanceof EntityMetadataWrapper)) {
-	    	$order = entity_metadata_wrapper('commerce_order', $order);
-	  	//}
-	    	drupal_set_message("<pre>" . print_r((array)$order, 1) . "</pre>");
+		$order = entity_metadata_wrapper('commerce_order', $order);
+	  	
 	  	//classify order by source and save
 	  	$order->field_reports_bysource->field_reports_bysource_ref->set(intval($tid));
 	  	commerce_order_save($order);
