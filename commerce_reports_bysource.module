@@ -43,7 +43,7 @@ function commerce_reports_bysource_classify_order($order){
 
 		//if not exists source create it
 		if (empty($tid)){
-			$tid = _create_source($vocabulary,$src_code);
+			$tid = _create_source($vocabulary, $src_code);
 		}
 
 		//if not arte instance $order do it
@@ -89,7 +89,7 @@ function _create_source($vocabulary=NULL,$src=NULL){
 			'vid' => $vid,
 			);
 		taxonomy_term_save($newsrc);
-		$tid = taxonomy_get_term_by_name($src, $vocabulary)
+		$tid = taxonomy_get_term_by_name($src, $vocabulary);
 	}
 
 	return $tid;
