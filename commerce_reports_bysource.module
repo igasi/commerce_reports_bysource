@@ -24,13 +24,12 @@ function commerce_reports_bysource_init(){
     1 0 insert g > s
     1 1 insert g > s
 */
-    /*if ( empty($src_tmpget) && empty($src_session) ){
-        $_SESSION['commerce_reports_bysource']['src_code'] = 'Direct';
-    } else */
     if ( isset($src_tmpget) && empty($src_session) ) {
         $_SESSION['commerce_reports_bysource']['src_code'] = $src_tmpget;
 	} else if ( isset($src_tmpget) && isset($src_session) ) {
         $_SESSION['commerce_reports_bysource']['src_code'] = $src_tmpget;
+	} else {
+		$_SESSION['commerce_reports_bysource']['src_code'] = NULL;
 	}
 
     //drupal_set_message("<pre>" . print_r(array('src'=>$src_tmpget,'session'=>$_SESSION['commerce_reports_bysource']), 1) . "</pre>");
