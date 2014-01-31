@@ -75,9 +75,9 @@ function _commerce_reports_bysource_add_taxonomy_term_field(){
 
 function commerce_reports_bysource_uninstall() {
 
-	_commerce_reports_bysource_delete_taxonomy_vocabulary();  
-	_commerce_reports_bysource_delete_taxonomy_term_field();
 	_commerce_reports_bisource_delete_view();
+	_commerce_reports_bysource_delete_taxonomy_term_field();
+	_commerce_reports_bysource_delete_taxonomy_vocabulary();  
 
 }
 
@@ -91,6 +91,9 @@ function _commerce_reports_bysource_delete_taxonomy_vocabulary(){
 
 	$vocab = taxonomy_vocabulary_machine_name_load('commerce_reports_bysource');
 	if (isset($vocab)){
+		foreach (taxonomy_get_tree($vocab->vid) as $term) {
+			taxonomy_term_delete($term->tid);
+		}
 		taxonomy_vocabulary_delete($vocab->vid);	
 	}
 
@@ -105,21 +108,22 @@ function _commerce_reports_bysource_delete_taxonomy_term_field(){
 	$field_name = 'field_reports_bysource';
 	$field = field_info_field($field_name);
 	if ( isset($field) ){
+		$result = db_truncate('field_data_'.$field_name)->execute();
 		field_delete_field($field_name);
 		//actually delete the field
-		field_purge_batch();
+		field_purge_batch(2);
 	}
 }
 
 
 function _commerce_reports_bisource_delete_view(){
 
-	$name='view_test';
+	$name='sales_by_source_reports';
 
 	$view = views_get_view($name, $reset = FALSE);
 	if (isset($view)){
 		$view->delete();
-		views_object_cache_clear('view', $view->name);
+		views_flush_caches();
 	}
 
 }

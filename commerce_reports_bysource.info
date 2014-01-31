@@ -3,10 +3,13 @@ description = It add a new tab for extend commerce_reports, that filter by sourc
 package = Commerce (contrib)
 core = 7.x
 
-dependencies[] = field
+
 ;dependencies[] = commerce
 ;dependencies[] = views_api
+dependencies[] = field
+dependencies[] = commerce_reports
 dependencies[] = commerce_order
+;dependencies[] = composer_manager
 
 files[] = rules/commerce_reports_bysource.rules.inc
 files[] = rules/commerce_reports_bysource.rules_defaults.inc

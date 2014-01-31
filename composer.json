@@ -1,0 +1,13 @@
+{
+    "name": "getRequest_source/commerce_reports_bysource",
+    "description": "Layer request for get source and tracking for generating commerce reports by source",
+    "authors": [
+        {
+            "name": "igasi",
+            "email": "isaac_gasi@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/http-foundation": "2.4.*"
+    }
+}

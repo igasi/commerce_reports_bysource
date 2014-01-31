@@ -4,11 +4,27 @@
  * Implements hook_init()
  */
 function commerce_reports_bysource_init(){
-	//create var src in session
-	if (isset($_GET['src'])){
-		$_SESSION['crb_src'] = $_GET['src'];
-		unset($_GET['src']);
+	//init safe session
+	drupal_session_start();
+    $src_tmpget = NULL;
+
+    if ( array_key_exists('src', $_GET) ){
+        $src_tmpget = $_GET["src"];	
+    }
+/*
+g= get, s = session
+    g s
+    0 0 (direct) nothing
+    0 1 nothing
+    1 0 insert g > s
+    1 1 insert g > s
+*/
+    if ( !empty($src_tmpget) ) {
+        $_SESSION['commerce_reports_bysource']['src_code'] = $src_tmpget;
 	}
+
+    //drupal_set_message("<pre>" . print_r(array('src'=>$src_tmpget,'session'=>$_SESSION['commerce_reports_bysource']), 1) . "</pre>");
+
 }
 
 /**
@@ -16,34 +32,31 @@ function commerce_reports_bysource_init(){
  */
 function commerce_reports_bysource_classify_order($order){
 
-	//set values
-	unset($term);
-	$src = $_SESSION['crb_src'];
-	$vocabulary = 'commerce_reports_bysource';
-	$vocabulary_names=taxonomy_vocabulary_get_names();
-	$vid = $vocabulary_names[$vocabulary]->vid;
-	$tid = taxonomy_get_term_by_name($src, $vocabulary);
+//set values
+    unset($term);
+    $src_code = $_SESSION['commerce_reports_bysource']['src_code'];
 
-	//if not exists source create it
-	if (!isset($tid)){
-		$newsrc = (object) array(
-			'name' => $src,
-			'description' => 'Source: ' . $src,
-			'vid' => $vid,
-			);
-		taxonomy_term_save($newsrc);
-		$tid = $newsrc->tid;
-	}
+    if ( !empty($src_code) ) {
 
-	//if not arte instance $order do it
-	if (!($order instanceof EntityMetadataWrapper)) {
-    	$order = entity_metadata_wrapper('commerce_order', $order);
-  	}
+        $vocabulary = 'commerce_reports_bysource';
 
-  	//classify order by source and save
-  	$order->field_reports_bysource = array($tid);
-  	commerce_order_save($order);
+        $taxonomy = taxonomy_get_term_by_name($src_code, $vocabulary );
+        if ( !empty($taxonomy) ){
+        	$taxonomy_item = array_pop($taxonomy);
+        	$tid = $taxonomy_item->tid;	
+        }else{
+            $tid = _create_source($vocabulary, $src_code);
+        }
 
+        $order = entity_metadata_wrapper('commerce_order', $order);
+
+        //classify order by source and save
+        $order->field_reports_bysource->set(intval($tid));
+        $order->save();
+
+        //drupal_set_message("<pre>order: \n" . print_r($order,1) . "</pre>");
+
+    }
 
 }
 
@@ -55,4 +68,28 @@ function commerce_reports_bysource_views_api() {
     'api' => 3,
     'path' => drupal_get_path('module', 'commerce_reports_bysource') . '/views',
   );
+}
+
+/**
+ * Auxiliary function for create taxonomy term of the commerce_reports_bysource
+ */
+
+function _create_source($vocabulary=NULL,$src=NULL){
+    $tid = NULL;
+
+    if ( !empty($vocabulary) && !empty($src) ){
+            $vocabulary_names = taxonomy_vocabulary_get_names();
+            $vid = $vocabulary_names[$vocabulary]->vid;
+            $newsrc = (object) array(
+                    'name' => $src,
+                    'description' => 'Source: ' . $src,
+                    'vid' => $vid,
+                    );
+            taxonomy_term_save($newsrc);
+            $taxonomy = taxonomy_get_term_by_name($src, $vocabulary);
+            $taxonomy_item = array_pop($taxonomy);
+            $tid = $taxonomy_item->tid;
+    }
+
+    return $tid;
 }
