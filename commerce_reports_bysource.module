@@ -32,32 +32,34 @@ g= get, s = session
  */
 function commerce_reports_bysource_classify_order($order){
 
-//set values
+    //set values
     unset($term);
-    $src_code = $_SESSION['commerce_reports_bysource']['src_code'];
+    if ( array_key_exists('commerce_reports_bysource', $_SESSION) ) {
+            
+        $src_code = $_SESSION['commerce_reports_bysource']['src_code'];
 
-    if ( !empty($src_code) ) {
+        if ( !empty($src_code) ) {
 
-        $vocabulary = 'commerce_reports_bysource';
+            $vocabulary = 'commerce_reports_bysource';
 
-        $taxonomy = taxonomy_get_term_by_name($src_code, $vocabulary );
-        if ( !empty($taxonomy) ){
-        	$taxonomy_item = array_pop($taxonomy);
-        	$tid = $taxonomy_item->tid;	
-        }else{
-            $tid = _create_source($vocabulary, $src_code);
+            $taxonomy = taxonomy_get_term_by_name($src_code, $vocabulary );
+            if ( !empty($taxonomy) ){
+                $taxonomy_item = array_pop($taxonomy);
+                $tid = $taxonomy_item->tid; 
+            }else{
+                $tid = _create_source($vocabulary, $src_code);
+            }
+
+            $order = entity_metadata_wrapper('commerce_order', $order);
+
+            //classify order by source and save
+            $order->field_reports_bysource->set(intval($tid));
+            $order->save();
+
+            //drupal_set_message("<pre>order: \n" . print_r($order,1) . "</pre>");
         }
-
-        $order = entity_metadata_wrapper('commerce_order', $order);
-
-        //classify order by source and save
-        $order->field_reports_bysource->set(intval($tid));
-        $order->save();
-
-        //drupal_set_message("<pre>order: \n" . print_r($order,1) . "</pre>");
-
     }
-
+    
 }
 
 /**
